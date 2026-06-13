@@ -5,8 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/salarylens_db
     username: postgres
-    password: admin123
-
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -25,7 +24,7 @@ spring:
 
 
 jwt:
-  secret: salarylens-secret-key-jo-bahut-lamba-hona-chahiye-production-mein
+  secret: ${JWT_SECRET}
   expiration: 86400000
 
 server:
