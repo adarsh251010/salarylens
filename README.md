@@ -114,5 +114,4 @@ mvn spring-boot:run
 ---
 
 **Author**: Adarsh Rai  
-**Portfolio**: https://netflix-style-portfolio-alpha.vercel.app/  
-**LinkedIn**: [Add your LinkedIn]
+**Portfolio**: https://netflix-style-portfolio-alpha.vercel.app/
