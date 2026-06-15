@@ -1,10 +1,9 @@
 services:
   - type: web
     name: salarylens
-    runtime: java
-    rootDir: backend
-    buildCommand: "./mvnw clean package -DskipTests"
-    startCommand: "java -jar target/salarylens-0.0.1-SNAPSHOT.jar"
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
     envVars:
       - key: SPRING_DATASOURCE_URL
         sync: false
