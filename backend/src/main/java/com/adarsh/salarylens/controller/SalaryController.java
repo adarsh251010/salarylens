@@ -6,6 +6,7 @@ import com.adarsh.salarylens.service.SalaryAnalysisService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,49 +22,60 @@ public class SalaryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SalaryResponseDTO>> getAllSalaries() {
-        return ResponseEntity.ok(service.getAllSalaries());
+    public ResponseEntity<List<SalaryResponseDTO>> getAllSalaries(
+            @AuthenticationPrincipal String username) {
+        return ResponseEntity.ok(service.getAllSalaries(username));
     }
 
     @PostMapping
-    public ResponseEntity<SalaryResponseDTO> saveSalary(@Valid @RequestBody SalaryRequestDTO requestDTO) {
-        return ResponseEntity.ok(service.saveSalary(requestDTO));
+    public ResponseEntity<SalaryResponseDTO> saveSalary(
+            @Valid @RequestBody SalaryRequestDTO requestDTO,
+            @AuthenticationPrincipal String username) {
+        return ResponseEntity.ok(service.saveSalary(requestDTO, username));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SalaryResponseDTO> getSalaryById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getSalaryById(id));
+    public ResponseEntity<SalaryResponseDTO> getSalaryById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal String username) {
+        return ResponseEntity.ok(service.getSalaryById(id, username));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteSalary(@PathVariable Long id) {
-        service.deleteSalary(id);
+    public ResponseEntity<String> deleteSalary(
+            @PathVariable Long id,
+            @AuthenticationPrincipal String username) {
+        service.deleteSalary(id, username);
         return ResponseEntity.ok("Salary record deleted successfully");
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<SalaryResponseDTO> updateSalary(
             @PathVariable Long id,
-            @Valid @RequestBody SalaryRequestDTO requestDTO) {
-        return ResponseEntity.ok(service.updateSalary(id, requestDTO));
+            @Valid @RequestBody SalaryRequestDTO requestDTO,
+            @AuthenticationPrincipal String username) {
+        return ResponseEntity.ok(service.updateSalary(id, requestDTO, username));
     }
 
     @GetMapping("/paginated")
     public ResponseEntity<Page<SalaryResponseDTO>> getAllSalariesPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.getAllSalariesPaginated(page, size));
+            @RequestParam(defaultValue = "10") int size,
+            @AuthenticationPrincipal String username) {
+        return ResponseEntity.ok(service.getAllSalariesPaginated(page, size, username));
     }
 
     @GetMapping("/location")
     public ResponseEntity<List<SalaryResponseDTO>> getSalariesByLocation(
-            @RequestParam String location) {
-        return ResponseEntity.ok(service.getSalariesByLocation(location));
+            @RequestParam String location,
+            @AuthenticationPrincipal String username) {
+        return ResponseEntity.ok(service.getSalariesByLocation(location, username));
     }
 
     @GetMapping("/experience")
     public ResponseEntity<List<SalaryResponseDTO>> getSalariesByExperience(
-            @RequestParam Integer years) {
-        return ResponseEntity.ok(service.getSalariesByExperience(years));
+            @RequestParam Integer years,
+            @AuthenticationPrincipal String username) {
+        return ResponseEntity.ok(service.getSalariesByExperience(years, username));
     }
 }

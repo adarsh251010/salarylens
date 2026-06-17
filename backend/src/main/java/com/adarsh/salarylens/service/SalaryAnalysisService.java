@@ -22,20 +22,21 @@ public class SalaryAnalysisService {
         this.repository = repository;
     }
 
-    public SalaryResponseDTO saveSalary(SalaryRequestDTO requestDTO) {
+    public SalaryResponseDTO saveSalary(SalaryRequestDTO requestDTO, String username) {
         SalaryData entity = new SalaryData();
         entity.setJobTitle(requestDTO.getJobTitle());
         entity.setExperienceYears(requestDTO.getExperienceYears());
         entity.setSalaryOffered(requestDTO.getSalaryOffered());
         entity.setLastSalary(requestDTO.getLastSalary());
         entity.setLocation(requestDTO.getLocation());
+        entity.setUsername(username);
 
         SalaryData saved = repository.save(entity);
         return convertToDTO(saved);
     }
 
-    public List<SalaryResponseDTO> getAllSalaries() {
-        return repository.findAll()
+    public List<SalaryResponseDTO> getAllSalaries(String username) {
+        return repository.findByUsername(username)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -52,21 +53,20 @@ public class SalaryAnalysisService {
         return dto;
     }
 
-    public SalaryResponseDTO getSalaryById(Long id) {
-        SalaryData entity = repository.findById(id)
+    public SalaryResponseDTO getSalaryById(Long id, String username) {
+        SalaryData entity = repository.findByIdAndUsername(id, username)
                 .orElseThrow(() -> new SalaryNotFoundException(id));
         return convertToDTO(entity);
     }
 
-    public void deleteSalary(Long id) {
-        if (!repository.existsById(id)) {
-            throw new SalaryNotFoundException(id);
-        }
-        repository.deleteById(id);
+    public void deleteSalary(Long id, String username) {
+        SalaryData entity = repository.findByIdAndUsername(id, username)
+                .orElseThrow(() -> new SalaryNotFoundException(id));
+        repository.delete(entity);
     }
 
-    public SalaryResponseDTO updateSalary(Long id, SalaryRequestDTO requestDTO) {
-        SalaryData entity = repository.findById(id)
+    public SalaryResponseDTO updateSalary(Long id, SalaryRequestDTO requestDTO, String username) {
+        SalaryData entity = repository.findByIdAndUsername(id, username)
                 .orElseThrow(() -> new SalaryNotFoundException(id));
 
         entity.setJobTitle(requestDTO.getJobTitle());
@@ -79,21 +79,21 @@ public class SalaryAnalysisService {
         return convertToDTO(updated);
     }
 
-    public Page<SalaryResponseDTO> getAllSalariesPaginated(int page, int size) {
+    public Page<SalaryResponseDTO> getAllSalariesPaginated(int page, int size, String username) {
         Pageable pageable = PageRequest.of(page, size);
-        return repository.findAll(pageable)
+        return repository.findByUsername(username, pageable)
                 .map(this::convertToDTO);
     }
 
-    public List<SalaryResponseDTO> getSalariesByLocation(String location) {
-        return repository.findByLocation(location)
+    public List<SalaryResponseDTO> getSalariesByLocation(String location, String username) {
+        return repository.findByUsernameAndLocation(username, location)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<SalaryResponseDTO> getSalariesByExperience(Integer years) {
-        return repository.findByExperienceYearsGreaterThanEqual(years)
+    public List<SalaryResponseDTO> getSalariesByExperience(Integer years, String username) {
+        return repository.findByUsernameAndExperienceYearsGreaterThanEqual(username, years)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

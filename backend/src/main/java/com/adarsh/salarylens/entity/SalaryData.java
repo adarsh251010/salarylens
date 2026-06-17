@@ -17,4 +17,7 @@ public class SalaryData {
     private Double salaryOffered;
     private Double lastSalary;
     private String location;
+
+    @Column(nullable = false)
+    private String username;
 }
